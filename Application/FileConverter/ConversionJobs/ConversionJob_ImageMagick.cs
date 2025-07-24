@@ -194,7 +194,12 @@ namespace FileConverter.ConversionJobs
                     int width = System.Math.Min(image.Width, maximumSize);
                     int height = System.Math.Min(image.Height, maximumSize);
 
-                    Debug.Log("Clamp size to maximum size of {2}x{2} (from {0}x{1} to {2}x{3}).", image.Width, image.Height, width, height);
+                    Debug.Log(
+                        "Clamp size to maximum size of {2}x{3} (from {0}x{1} to {2}x{3}).",
+                        image.Width,
+                        image.Height,
+                        width,
+                        height);
 
                     image.Scale(width, height);
                 }

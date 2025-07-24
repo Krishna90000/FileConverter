@@ -14,7 +14,8 @@ namespace FileConverter.ConversionJobs
     public partial class ConversionJob_FFMPEG : ConversionJob
     {
         private readonly Regex durationRegex = new Regex(@"Duration:\s*([0-9][0-9]):([0-9][0-9]):([0-9][0-9])\.([0-9][0-9]),.*bitrate:\s*([0-9]+) kb\/s");
-        private readonly Regex progressRegex = new Regex(@"size=\s*([0-9]+)kB\s+time=([0-9][0-9]):([0-9][0-9]):([0-9][0-9]).([0-9][0-9])\s+bitrate=\s*([0-9]+.[0-9])kbits\/s");
+        private readonly Regex progressRegex =
+            new Regex(@"size=\s*([0-9]+)kB\s+time=([0-9][0-9]):([0-9][0-9]):([0-9][0-9])\.([0-9][0-9])\s+bitrate=\s*([0-9]+(?:\.[0-9]+)?)kbits\/s");
 
         private TimeSpan fileDuration;
         private TimeSpan actualConvertedDuration;
@@ -480,7 +481,7 @@ namespace FileConverter.ConversionJobs
                 int minutes = int.Parse(match.Groups[2].Value);
                 int seconds = int.Parse(match.Groups[3].Value);
                 int milliseconds = int.Parse(match.Groups[4].Value);
-                float bitrate = float.Parse(match.Groups[5].Value);
+                float bitrate = float.Parse(match.Groups[5].Value, CultureInfo.InvariantCulture);
                 this.fileDuration = new TimeSpan(0, hours, minutes, seconds, milliseconds);
                 return;
             }
@@ -496,7 +497,7 @@ namespace FileConverter.ConversionJobs
                     int seconds = int.Parse(match.Groups[4].Value);
                     int milliseconds = int.Parse(match.Groups[5].Value) * 10;
                     float bitrate = 0f;
-                    float.TryParse(match.Groups[6].Value, out bitrate);
+                    float.TryParse(match.Groups[6].Value, NumberStyles.Float, CultureInfo.InvariantCulture, out bitrate);
 
                     this.actualConvertedDuration = new TimeSpan(0, hours, minutes, seconds, milliseconds);
 
